@@ -16,7 +16,5 @@ steps:
 
   - wait
   - label: run the plugin
-    command: "echo hello world"
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
-        image: ubuntu:18.04

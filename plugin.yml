@@ -13,6 +13,8 @@ configuration:
       type: string
     auth-token:
       type: string
+    plan-path:
+      type: string
     upload:
       type: boolean
     upload-branch-regex:
