@@ -19,3 +19,5 @@ steps:
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
         origin: gscho
+        plan-path: fixtures
+        upload: false
