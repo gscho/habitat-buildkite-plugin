@@ -11,8 +11,6 @@ configuration:
       type: string
     bldr-url:
       type: string
-    auth-token:
-      type: string
     plan-path:
       type: string
     upload:
@@ -21,6 +19,4 @@ configuration:
       type: string
   required:
     - origin
-    - channel
-    - auth-token
   additionalProperties: false

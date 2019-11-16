@@ -1,8 +1,39 @@
 #!/bin/bash
+# shellcheck disable=SC1091,SC2154
 set -euo pipefail
 
-hab --version
+_HAB="$( command -v hab 2>/dev/null )"
 
-echo "${BUILDKITE_PLUGIN_HABITAT_ORIGIN}"
-echo "${BUILDKITE_PLUGIN_HABITAT_CHANNEL}"
-echo "${BUILDKITE_PLUGIN_HABITAT_AUTH_TOKEN}"
+# Make sure habitat is installed
+if [[ ! -e "${_HAB}" ]]; then
+    echo "The 'hab' binary does not seem to be installed."
+    exit 2
+fi
+
+# Transform a BUILDKITE_PLUGIN_HABITAT environment variable to a HAB environment variable
+buildkite_env_to_hab_env() {
+  local key="$1"
+  local value="$2"
+  if [ -z "${key}" ] ; then
+    export "${key/BUILDKITE_PLUGIN_HABITAT/HAB}"="${value}"
+  fi
+}
+
+channel="${BUILDKITE_PLUGIN_HABITAT_CHANNEL:-unstable}"
+branch_regex="${BUILDKITE_PLUGIN_HABITAT_UPLOAD_BRANCH_REGEX:-master}"
+bldr_url="${BUILDKITE_PLUGIN_HABITAT_BLDR_URL:-https://bldr.habitat.sh}"
+plan_path="${BUILDKITE_PLUGIN_HABITAT_PLAN_PATH:-.}"
+
+buildkite_env_to_hab_env "BUILDKITE_PLUGIN_HABITAT_ORIGIN" "${BUILDKITE_PLUGIN_HABITAT_ORIGIN}"
+buildkite_env_to_hab_env "BUILDKITE_PLUGIN_HABITAT_BLDR_URL" "${bldr_url}"
+
+hab pkg build "${plan_path}"
+
+source results/last_build.env
+
+if [[ "${BUILDKITE_PLUGIN_HABITAT_UPLOAD:-true}" = true ]] ; then
+  if [[ "${BUILDKITE_BRANCH}" =~ $branch_regex ]] ; then
+    hab pkg upload "results/${pkg_artifact}"
+    hab pkg promote "${pkg_ident}" --channel "${channel}"
+  fi
+fi
