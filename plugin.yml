@@ -2,7 +2,7 @@ name: Habitat
 description: Build and upload habitat packages
 author: https://github.com/gscho
 requirements:
-  - hab
+  - bash
 configuration:
   properties:
     origin:
