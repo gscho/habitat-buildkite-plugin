@@ -1,0 +1,25 @@
+name: Habitat
+description: Build and upload habitat packages
+author: https://github.com/gscho
+requirements:
+  - bash
+  - hab
+configuration:
+  properties:
+    origin:
+      type: string
+    channel:
+      type: string
+    bldr-url:
+      type: string
+    auth-token:
+      type: string
+    upload:
+      type: boolean
+    upload-branch-regex:
+      type: string
+  required:
+    - origin
+    - channel
+    - auth-token
+  additionalProperties: false
