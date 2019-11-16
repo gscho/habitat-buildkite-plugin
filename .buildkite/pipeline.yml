@@ -18,3 +18,6 @@ steps:
   - label: run the plugin
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
+        origin: test-origin
+        channel: test-channel
+        auth-token: test-auth-token

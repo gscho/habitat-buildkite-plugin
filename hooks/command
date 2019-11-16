@@ -2,3 +2,7 @@
 set -euo pipefail
 
 hab --version
+
+echo "${BUILDKITE_PLUGIN_HABITAT_ORIGIN}"
+echo "${BUILDKITE_PLUGIN_HABITAT_CHANNEL}"
+echo "${BUILDKITE_PLUGIN_HABITAT_AUTH_TOKEN}"
