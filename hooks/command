@@ -14,20 +14,20 @@ fi
 buildkite_env_to_hab_env() {
   local key="$1"
   local value="$2"
-  if [ -z "${!key}" ] ; then
-    export "${key/BUILDKITE_PLUGIN_HABITAT/HAB}"="${value}"
-  fi
+  export "${key/BUILDKITE_PLUGIN_HABITAT/HAB}"="${value}"
 }
 
 channel="${BUILDKITE_PLUGIN_HABITAT_CHANNEL:-unstable}"
 branch_regex="${BUILDKITE_PLUGIN_HABITAT_UPLOAD_BRANCH_REGEX:-master}"
 bldr_url="${BUILDKITE_PLUGIN_HABITAT_BLDR_URL:-https://bldr.habitat.sh}"
 plan_path="${BUILDKITE_PLUGIN_HABITAT_PLAN_PATH:-.}"
+origin="${BUILDKITE_PLUGIN_HABITAT_ORIGIN}"
 
 buildkite_env_to_hab_env "BUILDKITE_PLUGIN_HABITAT_ORIGIN" "${BUILDKITE_PLUGIN_HABITAT_ORIGIN}"
 buildkite_env_to_hab_env "BUILDKITE_PLUGIN_HABITAT_BLDR_URL" "${bldr_url}"
 
-hab origin key download "${HAB_ORIGIN}"
+hab origin key download "${origin}"
+hab origin key download "${origin}" --secret
 
 hab pkg build "${plan_path}"
 
@@ -35,7 +35,6 @@ source results/last_build.env
 
 if [[ "${BUILDKITE_PLUGIN_HABITAT_UPLOAD:-true}" = true ]] ; then
   if [[ "${BUILDKITE_BRANCH}" =~ $branch_regex ]] ; then
-    hab origin key download "${HAB_ORIGIN}" --secret
     hab pkg upload "results/${pkg_artifact}"
     hab pkg promote "${pkg_ident}" --channel "${channel}"
   fi
