@@ -1,21 +1,21 @@
 steps:
-  - label: ":shell: Shellcheck"
+  - label: "Plugin shellcheck"
     plugins:
       shellcheck#v1.1.2:
         files: hooks/**
 
-  - label: ":sparkles:"
+  - label: "Plugin lint"
     plugins:
       plugin-linter#v2.0.0:
         id: habitat
 
-  - label: ":docker: :hammer:"
+  - label: "Plugin test"
     plugins:
       docker-compose#v3.0.3:
         run: tests
 
   - wait
-  - label: run the plugin
+  - label: "Plugin functional test"
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
         origin: gscho
